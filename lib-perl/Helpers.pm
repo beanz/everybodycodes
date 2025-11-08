@@ -24,6 +24,7 @@ our %EXPORT_TAGS = (
       zip pairwise minmax
       ceil floor round
 
+      dd
       slurp
       input_file
       input
@@ -34,6 +35,11 @@ our @EXPORT_OK = (@{$EXPORT_TAGS{'all'}});
 our $VERSION = '0.01';
 
 use FindBin;
+use Data::Dumper;
+
+sub dd {
+  print STDERR Data::Dumper->Dump(@_);
+}
 
 sub slurp {
   my ($f) = @_;
@@ -41,7 +47,7 @@ sub slurp {
   local $/;
   my $c = <$fh>;
   close $fh;
-  return $c
+  return $c;
 }
 
 sub input_file {
