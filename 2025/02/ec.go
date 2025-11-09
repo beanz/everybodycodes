@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+
+	. "github.com/beanz/everybodycodes/lib-go"
 )
 
 type C struct {
@@ -22,6 +24,12 @@ func (a *C) Div(b *C) *C {
 
 func (a *C) String() string {
 	return fmt.Sprintf("[%d,%d]", a.x, a.y)
+}
+
+func parse(in []byte) *C {
+	i, a := ChompInt[int](in, 3)
+	_, b := ChompInt[int](in, i+1)
+	return &C{a, b}
 }
 
 func part1(a *C) string {
@@ -58,20 +66,14 @@ func count(a *C, step int) int {
 	return c
 }
 
-func part2(a *C) int {
-	return count(a, 10)
-}
-
-func part3(a *C) int {
-	return count(a, 1)
+func parts(i1, i2, i3 []byte) (string, int, int) {
+	a1 := parse(i1)
+	a2 := parse(i2)
+	a3 := parse(i3)
+	return part1(a1), count(a2, 10), count(a3, 1)
 }
 
 func main() {
-	r1 := part1(&C{145, 51})
-	r2 := part2(&C{-4581, -68892})
-	r3 := part3(&C{-4581, -68892})
-
-	fmt.Printf("Part 1: %v\n", r1)
-	fmt.Printf("Part 2: %v\n", r2)
-	fmt.Printf("Part 3: %v\n", r3)
+	p1, p2, p3 := parts(Input(1, ""), Input(2, ""), Input(3, ""))
+	fmt.Printf("Part 1: %v\nPart 2: %v\nPart 3: %v\n", p1, p2, p3)
 }

@@ -7,8 +7,7 @@ import (
 	. "github.com/beanz/everybodycodes/lib-go"
 )
 
-func main() {
-	i1 := Input(1, "")
+func parts(i1, i2, i3 []byte) (int, int, int) {
 	num := []int{}
 	for i := 0; i < len(i1); {
 		j, n := ChompUInt[int](i1, i)
@@ -16,7 +15,7 @@ func main() {
 		num = append(num, n)
 	}
 	p1 := 2025 * num[0] / num[len(num)-1]
-	i2 := Input(2, "")
+
 	num = num[:0]
 	for i := 0; i < len(i2); {
 		j, n := ChompUInt[int](i2, i)
@@ -24,7 +23,7 @@ func main() {
 		num = append(num, n)
 	}
 	p2 := int(math.Ceil(10000000000000.0 * float64(num[len(num)-1]) / float64(num[0])))
-	i3 := Input(3, "")
+
 	i := 0
 	j, s := ChompUInt[int](i3, i)
 	i = j + 1
@@ -41,7 +40,10 @@ func main() {
 	}
 	p3 := s
 
-	fmt.Printf("Part 1: %d\n", p1)
-	fmt.Printf("Part 2: %d\n", p2)
-	fmt.Printf("Part 3: %d\n", p3)
+	return p1, p2, p3
+}
+
+func main() {
+	p1, p2, p3 := parts(Input(1, ""), Input(2, ""), Input(3, ""))
+	fmt.Printf("Part 1: %v\nPart 2: %v\nPart 3: %v\n", p1, p2, p3)
 }

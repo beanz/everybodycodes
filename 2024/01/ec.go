@@ -32,11 +32,11 @@ func potions(in []byte, n int) int {
 	return res
 }
 
+func parts(i1, i2, i3 []byte) (int, int, int) {
+	return potions(i1, 1), potions(i2, 2), potions(i3, 3)
+}
+
 func main() {
-	i1 := Input(1, "")
-	fmt.Printf("Part 1: %v\n", potions(i1, 1))
-	i2 := Input(2, "")
-	fmt.Printf("Part 2: %v\n", potions(i2, 2))
-	i3 := Input(3, "")
-	fmt.Printf("Part 3: %v\n", potions(i3, 3))
+	p1, p2, p3 := parts(Input(1, ""), Input(2, ""), Input(3, ""))
+	fmt.Printf("Part 1: %v\nPart 2: %v\nPart 3: %v\n", p1, p2, p3)
 }

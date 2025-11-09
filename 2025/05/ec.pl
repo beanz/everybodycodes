@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 use strict;
 use warnings;
 use v5.30;
@@ -45,13 +45,10 @@ sub compare {
   my $f = $a->[1] <=> $b->[1];
   return $f if ($f);
   my $l = min(scalar @{$a->[2]}, scalar @{$b->[2]}) - 1;
-  print "L: $l ", (scalar @{$a->[2]}), ", ", (scalar @{$b->[2]}), "\n";
   for my $i (0 .. $l) {
-    print "$i $a->[2]->[$i] <=> $b->[2]->[$i]\n";
     my $f = $a->[2]->[$i] <=> $b->[2]->[$i];
     return $f if ($f);
   }
-  print "$a->[0] <=> $b->[0]\n";
   return $a->[0] <=> $b->[0]
 }
 
@@ -62,16 +59,16 @@ sub sword {
 OUTER:
   for my $n (@$in) {
     for my $s (@fb) {
-      if (!defined $s->[0] && $n < $s->[1]) {
+      if ($s->[0] eq "" && $n < $s->[1]) {
         $s->[0] = $n;
         next OUTER;
       }
-      if (!defined $s->[2] && $n > $s->[1]) {
+      if ($s->[2] eq "" && $n > $s->[1]) {
         $s->[2] = $n;
         next OUTER;
       }
     }
-    push @fb, [undef, $n, undef];
+    push @fb, ["", $n, ""];
   }
   my $q = join "", map {$_->[1]} @fb;
   my @s = map {join "", @$_} @fb;
