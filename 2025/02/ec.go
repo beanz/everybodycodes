@@ -10,16 +10,18 @@ type C struct {
 	x, y int
 }
 
-func (a *C) Add(b *C) *C {
-	return &C{a.x + b.x, a.y + b.y}
+func (a *C) Add(b *C) {
+	a.x += b.x
+	a.y += b.y
 }
 
-func (a *C) Mul(b *C) *C {
-	return &C{a.x*b.x - a.y*b.y, a.x*b.y + a.y*b.x}
+func (a *C) Mul(b *C) {
+	a.x, a.y = a.x*b.x-a.y*b.y, a.x*b.y+a.y*b.x
 }
 
-func (a *C) Div(b *C) *C {
-	return &C{a.x / b.x, a.y / b.y}
+func (a *C) Div(b *C) {
+	a.x /= b.x
+	a.y /= b.y
 }
 
 func (a *C) String() string {
@@ -35,9 +37,9 @@ func parse(in []byte) *C {
 func part1(a *C) string {
 	r := &C{0, 0}
 	for i := 0; i < 3; i++ {
-		r = r.Mul(r)
-		r = r.Div(&C{10, 10})
-		r = r.Add(a)
+		r.Mul(r)
+		r.Div(&C{10, 10})
+		r.Add(a)
 	}
 	return r.String()
 }
@@ -45,9 +47,9 @@ func part1(a *C) string {
 func engrave(a *C) bool {
 	r := &C{0, 0}
 	for i := 0; i < 100; i++ {
-		r = r.Mul(r)
-		r = r.Div(&C{100000, 100000})
-		r = r.Add(a)
+		r.Mul(r)
+		r.Div(&C{100000, 100000})
+		r.Add(a)
 	}
 	return -1000000 <= r.x && r.x <= 1000000 &&
 		-1000000 <= r.y && r.y <= 1000000
