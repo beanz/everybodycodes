@@ -10,7 +10,6 @@ func parts(i1, i2, i3 []byte) (int, int, int) {
 	var a1 int
 	{
 		_, n := ChompUInt[int](i1, 0)
-		LG(n)
 		t, i := 0, 1
 		for ; t < n; i += 2 {
 			t += i
@@ -18,7 +17,6 @@ func parts(i1, i2, i3 []byte) (int, int, int) {
 		i -= 2
 		d := t - n
 		a1 = i * d
-		LG(i, d)
 	}
 	var a2 int
 	{
@@ -27,7 +25,6 @@ func parts(i1, i2, i3 []byte) (int, int, int) {
 		if priests == 3 {
 			acolytes, blocks = 5, 50
 		}
-		LG(priests, acolytes, blocks)
 		t, i, th := 1, 3, 1
 		for ; t < blocks; i += 2 {
 			th = (th * priests) % acolytes
@@ -36,42 +33,38 @@ func parts(i1, i2, i3 []byte) (int, int, int) {
 		i -= 2
 		d := t - blocks
 		a2 = i * d
-		LG(i, d)
 	}
 	var a3 int
 	{
 		_, priests := ChompUInt[int](i3, 0)
-		acolytes, blocks := 1111, 202400000
+		acolytes, blocks := 10, 202400000
 		if priests == 2 {
 			acolytes, blocks = 5, 160
 		}
-		LG(priests, acolytes, blocks)
 		t, i, th := 1, 3, 1
 		heights := []int{1}
 		for ; t < blocks; i += 2 {
 			th = (th*priests)%acolytes + acolytes
+			t = 0
 			heights = append(heights, 0)
 			for i := range heights {
 				heights[i] += th
+				t += heights[i] * 2
 			}
-			t += th * i
-			LG(heights, t)
+			t -= heights[0]
 		}
 		i -= 2
 		remove := 0
 		m := i * priests
 		for i := range len(heights) - 1 {
 			r := m * heights[i] % acolytes
-			LG(r)
-			remove += r
+			r = min(heights[i+1], r)
 			if i > 0 {
-				remove += r
+				r *= 2
 			}
+			remove += r
 		}
-		LG(remove)
 		t -= remove
-		LG(t)
-
 		d := t - blocks
 		a3 = d
 	}
