@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func LG(argv ...any) {
+func Lg(argv ...any) {
 	var sb strings.Builder
 	sb.WriteString("%v")
 	for i := 1; i < len(argv); i++ {
@@ -14,4 +14,8 @@ func LG(argv ...any) {
 	}
 	sb.WriteByte('\n')
 	fmt.Fprintf(os.Stderr, sb.String(), argv...)
+}
+
+func Lf(format string, argv ...any) {
+	fmt.Fprintf(os.Stderr, format, argv...)
 }

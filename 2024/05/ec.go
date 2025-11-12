@@ -41,7 +41,6 @@ func parts(i1, i2, i3 []byte) (int, int, int) {
 		}
 		seen3[k] = struct{}{}
 	}
-	LG(len(seen3))
 	return a1, a2, a3
 }
 
