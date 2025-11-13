@@ -43,17 +43,17 @@ func findDir(exe, cwd string) (string, string, string) {
 	return filepath.Dir(filepath.Dir(cwd)), year, day
 }
 
-type Unsigned interface {
+type ECUnsigned interface {
 	~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64
 }
 
-type Signed interface {
+type ECSigned interface {
 	~int | ~int8 | ~int16 | ~int32 | ~int64
 }
 
-type Int interface{ Unsigned | Signed }
+type ECInt interface{ ECUnsigned | ECSigned }
 
-func ChompUInt[T Int](in []byte, i int) (j int, n T) {
+func ChompUInt[T ECInt](in []byte, i int) (j int, n T) {
 	j = i
 	if !('0' <= in[j] && in[j] <= '9') {
 		panic("not a number")
@@ -64,7 +64,7 @@ func ChompUInt[T Int](in []byte, i int) (j int, n T) {
 	return
 }
 
-func ChompInt[T Signed](in []byte, i int) (int, T) {
+func ChompInt[T ECSigned](in []byte, i int) (int, T) {
 	j, n := i, T(0)
 	var negative bool
 	if in[j] == '-' {
