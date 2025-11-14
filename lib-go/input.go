@@ -7,11 +7,17 @@ import (
 )
 
 func Input(n int, ex string) []byte {
-	bytes, err := os.ReadFile(InputFile(n, ex))
+	b, err := os.ReadFile(InputFile(n, ex))
 	if err != nil {
 		panic(err)
 	}
-	return bytes
+	if len(b) == 0 {
+		return nil
+	}
+	if b[len(b)-1] == '\n' {
+		return b[:len(b)-1]
+	}
+	return b
 }
 
 func InputFile(n int, ex string) string {

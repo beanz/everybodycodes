@@ -20,10 +20,12 @@ type parsed struct {
 }
 
 func parse(in []byte) *parsed {
-	return &parsed{}
+	p := &parsed{}
+	return p
 }
 
 func (p *parsed) String() string {
 	var sb strings.Builder
+	fmt.Fprintln(&sb, "todo")
 	return sb.String()
 }

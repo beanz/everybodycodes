@@ -55,7 +55,7 @@ times: ${TIMES}
 	@/usr/bin/time ./$<
 	@echo
 
-ec-go: ec.go
+ec-go: ec.go ../../lib-go/*.go
 	go build -o $@
 
 bench-go: gocpu.out
