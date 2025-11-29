@@ -6,6 +6,20 @@ import (
 	"strings"
 )
 
+func Dg(argv ...any) {
+	if !DEBUG() {
+		return
+	}
+	Lg(argv...)
+}
+
+func Df(format string, argv ...any) {
+	if !DEBUG() {
+		return
+	}
+	fmt.Fprintf(os.Stderr, format, argv...)
+}
+
 func Lg(argv ...any) {
 	var sb strings.Builder
 	sb.WriteString("%v")
