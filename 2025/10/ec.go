@@ -80,20 +80,42 @@ func part2(in []byte) int {
 }
 
 type rec struct {
-	d point
-	s [8]byte
-	n int
+	d    point
+	s    [8]byte
+	n    int
+	path string
+}
+
+func (r *rec) key() int {
+	k := r.d.x
+	k = (k << 4) + r.d.y
+	for _, y := range r.s {
+		k = (k << 4) + int(y&0xf)
+	}
+	return k
 }
 
 func part3(in []byte) int {
 	p := parse(in)
-	start := rec{*p.dragon, [8]byte{255, 255, 255, 255, 255, 255, 255, 255}, 0}
+	start := rec{*p.dragon, [8]byte{255, 255, 255, 255, 255, 255, 255, 255}, 0, ""}
 	for k := range p.s {
 		start.s[k.x] = byte(k.y)
 		start.n++
 	}
+	home := bytes.Repeat([]byte{byte(p.h)}, 8)
+	for x := 0; x < p.w-1; x++ {
+		for y := p.h - 1; y > 0; y-- {
+			if p.m[x+y*p.w] == '#' {
+				home[x] = byte(y)
+			} else {
+				break
+			}
+		}
+	}
+	Lg(home)
 	show := func(pos rec) string {
 		var sb strings.Builder
+		fmt.Fprintln(&sb, pos.path)
 		fmt.Fprintf(&sb, "%d,%d %v %d\n", pos.d.x, pos.d.y, pos.s, pos.n)
 		for y := range p.h {
 			for x := range p.w - 1 {
@@ -119,12 +141,15 @@ func part3(in []byte) int {
 		}
 		return sb.String()
 	}
+	chess := func(x, y byte) string {
+		return string([]byte{'A' + x, '1' + y})
+	}
 	Lg(show(start))
 	var moveDragon, moveSheep func(pos rec) int
-	seenD := map[rec]int{}
-	seenS := map[rec]int{}
+	seenD := map[int]int{}
+	seenS := map[int]int{}
 	moveDragon = func(pos rec) int {
-		if v, ok := seenD[pos]; ok {
+		if v, ok := seenD[pos.key()]; ok {
 			return v
 		}
 		Lg("mD\n", show(pos))
@@ -133,45 +158,57 @@ func part3(in []byte) int {
 			if !p.contains(m) {
 				continue
 			}
+			ms := " D>" + chess(byte(m.x), byte(m.y))
 			if int(pos.s[m.x]) == m.y {
 				i := m.x + m.y*p.w
 				if p.m[i] != '#' {
-					if pos.n != 1 {
-						ns := rec{*m, pos.s, pos.n - 1}
+					if pos.n > 1 {
+						ns := rec{*m, pos.s, pos.n - 1, pos.path + ms + "X"}
 						ns.s[m.x] = 255
 						c += moveSheep(ns)
+					} else {
+						Lg("all dead " + pos.path + ms + "X")
+						c++
 					}
 					continue
 				}
 			}
-			c += moveSheep(rec{*m, pos.s, pos.n})
+			c += moveSheep(rec{*m, pos.s, pos.n, pos.path + ms})
 		}
-		seenD[pos] = c
+		seenD[pos.key()] = c
 		return c
 	}
 	moveSheep = func(pos rec) int {
-		if v, ok := seenS[pos]; ok {
+		if v, ok := seenS[pos.key()]; ok {
 			return v
 		}
 		Lg("mS\n", show(pos))
 		c := 0
+		stuck := true
 		for x, y := range pos.s {
 			if y == 255 {
 				continue
 			}
 			Lg("  ", x, y)
-			if int(y) == p.h-1 {
-				pos.s[x] = 255
-				pos.n--
+			if y == home[x]-1 {
+				stuck = false
 				continue
 			}
-			if pos.d.x == x && pos.d.y == int(y-1) {
-				c += moveDragon(pos)
-				continue
+			if pos.d.x == x && pos.d.y == int(y+1) {
+				i := x + int(y+1)*p.w
+				if p.m[i] != '#' {
+					continue
+				}
 			}
+			stuck = false
 			ns := pos.s
 			ns[x] = y + 1
-			c += moveDragon(rec{pos.d, ns, pos.n})
+			ms := " S>" + chess(byte(x), y+1)
+			c += moveDragon(rec{pos.d, ns, pos.n, pos.path + ms})
+		}
+		seenS[pos.key()] = c
+		if stuck {
+			return moveDragon(pos)
 		}
 		return c
 	}
@@ -183,7 +220,7 @@ func parts(i1, i2, i3 []byte) (int, int, int) {
 }
 
 func main() {
-	p1, p2, p3 := parts(Input(1, ""), Input(2, ""), Input(3, "ex"))
+	p1, p2, p3 := parts(Input(1, ""), Input(2, ""), Input(3, ""))
 	fmt.Printf("Part 1: %v\nPart 2: %v\nPart 3: %v\n", p1, p2, p3)
 }
 
