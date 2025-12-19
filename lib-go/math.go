@@ -5,7 +5,7 @@ import (
 	"math/big"
 )
 
-func Abs[T ECSigned](x T) T {
+func Abs[T ECInt](x T) T {
 	if x < 0 {
 		return -x
 	}
@@ -56,7 +56,7 @@ func Abs64(a int64) int64 {
 	return a
 }
 
-func GCD(a, b int64) int64 {
+func OGCD(a, b int64) int64 {
 	a = Abs(a)
 	b = Abs(b)
 	if a > b {
@@ -68,7 +68,27 @@ func GCD(a, b int64) int64 {
 	return b
 }
 
-func LCM(a, b int64, integers ...int64) int64 {
+func GCD[T ECInt](a, b T) T {
+	a = Abs(a)
+	b = Abs(b)
+	if a > b {
+		a, b = b, a
+	}
+	for a != 0 {
+		a, b = (b % a), a
+	}
+	return b
+}
+
+func OLCM(a, b int64, integers ...int64) int64 {
+	result := a * b / GCD(a, b)
+	for i := 0; i < len(integers); i++ {
+		result = OLCM(result, integers[i])
+	}
+	return result
+}
+
+func LCM[T ECInt](a, b T, integers ...T) T {
 	result := a * b / GCD(a, b)
 	for i := 0; i < len(integers); i++ {
 		result = LCM(result, integers[i])
